@@ -40,20 +40,15 @@ class _BeerDetailsState extends State<BeerDetailsPage> {
 
   final String path = "/led-prueba";
   DatabaseReference itemRef;
-//  bool estado;
-//  String txtEstado;
-  Estado val = Estado();
+  StateHardware stateHardware = StateHardware();
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
 //    itemRef = FirebaseDatabase.instance.reference().child(path);
     final FirebaseDatabase database = FirebaseDatabase(app: widget.app);
     itemRef = database.reference().reference().child(path);
-//    estado = true;
-//    txtEstado = "Encendido";
-    val.setState(true);
+    stateHardware.setState(true);
   }
 
 
@@ -61,7 +56,6 @@ class _BeerDetailsState extends State<BeerDetailsPage> {
   Widget build(BuildContext context) {
     Beer _beer  = Beer(widget.beer);
 //    itemRef = FirebaseDatabase.instance.reference().child(path);
-
     return Scaffold(
         appBar: AppBar(
           title: Text(_beer.nombre),
@@ -127,11 +121,9 @@ class _BeerDetailsState extends State<BeerDetailsPage> {
                                 print("STREAM NULL");
                               } else if(snapshot.hasData) {
                                 if(snapshot.data.snapshot.value != null) {
-                                    val.setState(snapshot.data.snapshot.value);
+                                    stateHardware.setState(snapshot.data.snapshot.value);
   //                                return _textBuild(snapshot.data.snapshot.value);
                                     print("STREAM PERFECT");
-//                                    print("STREAM: ${snapshot.data}");
-//                                    print("STREAM: ${snapshot.data}");
                                     return Column(
                                       children: <Widget>[
                                         SizedBox(height: 16),
@@ -155,7 +147,6 @@ class _BeerDetailsState extends State<BeerDetailsPage> {
                                       ],
                                     );
                                 }
-
                               }
                               print("STREAM OTRO");
                               return Text(
@@ -173,22 +164,16 @@ class _BeerDetailsState extends State<BeerDetailsPage> {
 
     );
   }
-  _changeState(bool estado) {
-    if (estado) {
-//        txtEstado = "Encendido";
-    } else {
-//      txtEstado = "Apagado";
-    }
-  }
+
   @override
   void dispose() {
     // TODO: implement dispose
     super.dispose();
-    val.dispose();
+    stateHardware.dispose();
   }
 }
 
-class Estado {
+class StateHardware {
   final _stateController = StreamController<bool>();
   Stream<bool>get estate => _stateController.stream;
   void setState(bool val) =>_stateController.add(val);

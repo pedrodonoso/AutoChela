@@ -19,9 +19,9 @@ class _MapPageState extends State<MapPage> {
   bool resetToggle = false;
   var currentLocation;
   // var initialPosition;
-  var sitios = [];
-  var sitioActual;
-  var currentBearing;
+//  var sitios = [];
+//  var sitioActual;
+//  var currentBearing;
   List<Marker> listmarkers = [];
   Stream<QuerySnapshot> _query;
 
@@ -41,11 +41,18 @@ class _MapPageState extends State<MapPage> {
     super.initState();
 //    ListViewController = ScrollController();
 
+
     setState(() {
       mapToggle = true;
-
-      // populateClients();
-
+      listmarkers.add(
+          Marker(
+              markerId: MarkerId("Prueba"),
+              position: LatLng(-33.5646871,-70.7026347),
+              infoWindow: InfoWindow(title: "Nombre Prueba"),
+              icon: BitmapDescriptor.defaultMarkerWithHue(
+                BitmapDescriptor.hueViolet,
+              )
+          ));
       _query = Firestore.instance.collection('pubs').snapshots();
 
       // _startTracking();
@@ -54,27 +61,48 @@ class _MapPageState extends State<MapPage> {
 
   @override
   Widget build(BuildContext context) {
-//    LatLng latLng = LatLng(-33.5646871,-70.7026347);
+    LatLng latLng = LatLng(-33.5646871,-70.7026347);
     return Scaffold(
         appBar: AppBar(
           title: Text('AutoChela'),
         ),
         body: Stack(
           children: <Widget>[
+            Container(
+                height: MediaQuery.of(context).size.height,
+                width: MediaQuery.of(context).size.width,
+                child: mapToggle
+                    ? GoogleMap(
+                          initialCameraPosition: CameraPosition(
+                              target: latLng,//TODO: ubicacion inicial
+                              zoom: 15
+                          ),
+                          onMapCreated: onMapCreated,
+                          myLocationButtonEnabled: true,
+                          myLocationEnabled: true,
+                          mapType: MapType.normal,
+                          compassEnabled: true,
+                          markers:  Set.from(listmarkers),
+                        )
+                    : Center(
+                        child: Text(
+                          'Revisa datos, gps, wifi..',
+                          style: TextStyle(fontSize: 20.0)
+                        )
+                )
+
+            ),
             StreamBuilder<QuerySnapshot>(
               stream: _query,
               builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-                print('builderMyHomeStream');
                 if(snapshot.hasData) {
-
-                  print('foreachMyhome');
+                  print('STREAM MAP FULL');
                   return MapWidget(
                     documents: snapshot.data.documents,
-//                          controller: ListViewController,
                   );
                 } else if( snapshot.connectionState ==  ConnectionState.done) {
-                  print('DONE');
-                  return _snackBar("DONE");
+                  print('CONNECTION DONE');
+                  return _snackBar("CONNECTIONDONE");
                 } else if( snapshot.connectionState == ConnectionState.waiting ) {
                   return Center(
                       child: Container(
@@ -99,6 +127,10 @@ class _MapPageState extends State<MapPage> {
         )
     );
 
+  }
+  Future<Position> _getPosition() async {
+    Position position = await Geolocator().getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+    return position;
   }
 
   void onMapCreated(controller) {
@@ -187,47 +219,47 @@ class _MapPageState extends State<MapPage> {
       });
     });
   }
-
-  girarDerecha() {
-    mapController.animateCamera(CameraUpdate.newCameraPosition(
-        CameraPosition(
-            target: LatLng(sitioActual['location'].latitude,
-                sitioActual['location'].longitude
-            ),
-            bearing: currentBearing == 360.0 ? currentBearing : currentBearing + 90.0,
-            zoom: 17.0,
-            tilt: 45.0
-        )
-    )
-    ).then((val) {
-      setState(() {
-        if(currentBearing == 360.0) {}
-        else {
-          currentBearing = currentBearing + 90.0;
-        }
-      });
-    });
-  }
-
-  giroIzquierda() {
-    mapController.animateCamera(CameraUpdate.newCameraPosition(
-        CameraPosition(
-            target: LatLng(sitioActual['location'].latitude,
-                sitioActual['location'].longitude
-            ),
-            bearing: currentBearing == 0.0 ? currentBearing : currentBearing - 90.0,
-            zoom: 17.0,
-            tilt: 45.0
-        )
-    )
-    ).then((val) {
-      setState(() {
-        if(currentBearing == 0.0) {}
-        else {
-          currentBearing = currentBearing - 90.0;
-        }
-      });
-    });
-  }
+//
+//  girarDerecha() {
+//    mapController.animateCamera(CameraUpdate.newCameraPosition(
+//        CameraPosition(
+//            target: LatLng(sitioActual['location'].latitude,
+//                sitioActual['location'].longitude
+//            ),
+//            bearing: currentBearing == 360.0 ? currentBearing : currentBearing + 90.0,
+//            zoom: 17.0,
+//            tilt: 45.0
+//        )
+//    )
+//    ).then((val) {
+//      setState(() {
+//        if(currentBearing == 360.0) {}
+//        else {
+//          currentBearing = currentBearing + 90.0;
+//        }
+//      });
+//    });
+//  }
+//
+//  giroIzquierda() {
+//    mapController.animateCamera(CameraUpdate.newCameraPosition(
+//        CameraPosition(
+//            target: LatLng(sitioActual['location'].latitude,
+//                sitioActual['location'].longitude
+//            ),
+//            bearing: currentBearing == 0.0 ? currentBearing : currentBearing - 90.0,
+//            zoom: 17.0,
+//            tilt: 45.0
+//        )
+//    )
+//    ).then((val) {
+//      setState(() {
+//        if(currentBearing == 0.0) {}
+//        else {
+//          currentBearing = currentBearing - 90.0;
+//        }
+//      });
+//    });
+//  }
 
 }
