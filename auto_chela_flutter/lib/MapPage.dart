@@ -1,9 +1,5 @@
 
-
-
-
-
-
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
 import 'dart:async';
 import 'package:flutter/material.dart';
@@ -13,13 +9,12 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'MapWidget.dart';
 
-
-class MapaPage extends StatefulWidget {
+class MapPage extends StatefulWidget {
   @override
-  _MapaPageState createState() => _MapaPageState();
+  _MapPageState createState() => _MapPageState();
 }
 
-class _MapaPageState extends State<MapaPage> {
+class _MapPageState extends State<MapPage> {
   bool mapToggle = false;
   bool sitiosToggle = false;
   bool resetToggle = false;
@@ -30,7 +25,8 @@ class _MapaPageState extends State<MapaPage> {
   var currentBearing;
   List<Marker> listmarkers = [];
   Stream<QuerySnapshot> _query;
-  ScrollController ListViewController ;
+
+//  ScrollController ListViewController ;
   StreamSubscription<Position> _positionStream;
 
   GoogleMapController mapController;
@@ -51,9 +47,7 @@ class _MapaPageState extends State<MapaPage> {
 
       // populateClients();
 
-      _query = Firestore.instance
-          .collection('pubs')
-          .snapshots();
+      _query = Firestore.instance.collection('pubs').snapshots();
 
       // _startTracking();
     });
@@ -61,7 +55,7 @@ class _MapaPageState extends State<MapaPage> {
 
   @override
   Widget build(BuildContext context) {
-    LatLng latLng = LatLng(-33.5646871,-70.7026347);
+//    LatLng latLng = LatLng(-33.5646871,-70.7026347);
     return Scaffold(
         appBar: AppBar(
           title: Text('AutoChela'),
@@ -114,7 +108,7 @@ class _MapaPageState extends State<MapaPage> {
     });
   }
   Widget _snackBar(String nombre) {
-    return SnackBar(content: Text('${nombre}'));
+    return SnackBar(content: Text(nombre));
   }
 /*
   Future<double> aux(Location startLoc, Location endLoc) async {
@@ -126,18 +120,18 @@ class _MapaPageState extends State<MapaPage> {
     }
  */
 
-  _startTracking() {
+/*  _startTracking() {
     final geolocator = Geolocator();
     final locationOptions = LocationOptions(accuracy: LocationAccuracy.high, distanceFilter: 15);
     _positionStream = geolocator.getPositionStream(locationOptions).listen(_onLocationUpdate);
-  }
+  }*/
 
-  _onLocationUpdate(Position position) {
+/*  _onLocationUpdate(Position position) {
     if(position != null) {
       // initialPosition = LatLng(position.latitude,position.longitude);
       print("position ${position.latitude},${position.longitude}");
     }
-  }
+  }*/
 
   /*  populateClients() {
     print('populate');

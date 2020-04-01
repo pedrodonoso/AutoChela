@@ -57,8 +57,8 @@ Widget siteCard(DocumentSnapshot data,BuildContext context) {
       child: InkWell(
           onTap: () {
 //              String n =docRef.data.['reference'].toString();
-            print("Presionado ${nombre}");
-            Navigator.of(context).pushNamed('/Bar',arguments: data); //TODO: envía main info del boton presionado
+            print("Presionado $nombre");
+            Navigator.of(context).pushNamed('/bar',arguments: data); //TODO: envía main info del boton presionado
           },
           child: FittedBox(
               child:Material(
