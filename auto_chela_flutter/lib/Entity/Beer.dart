@@ -19,20 +19,19 @@ class Beer{
     this.precio = doc['precio'];
   }
 
-
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
           other is Beer &&
               runtimeType == other.runtimeType &&
-              descripcion == other.descripcion;
+              ref == other.ref;
 
   @override
-  int get hashCode => descripcion.hashCode;
+  int get hashCode => ref.hashCode;
 
   @override
   String toString() {
-    return 'Beer{nombre: $nombre}';
+    return 'Beer{nombre: $nombre, estrellas: $estrellas, precio: $precio}';
   }
 
 

@@ -7,8 +7,8 @@
          FlutterApplication and put your custom class here. -->
     <application
         android:name="io.flutter.app.FlutterApplication"
-        android:label="auto_chela_flutter"
-        android:icon="@mipmap/ic_launcher">
+        android:label="AutoChela"
+        android:icon="@mipmap/launcher_icon">
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyDB3JIHT6cmu5R7x3mrgM1x4fwGO0lUmsc"/>

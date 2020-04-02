@@ -45,23 +45,11 @@ class _BarPageState extends State<BarPage> {
 //                  listBeers.add(sn);
 //                  })
 //      ));
-      _queryBeers = ref.collection('beersOfPub')
-          .snapshots();
+      _queryBeers = ref.collection('beersOfPub').snapshots();
 
     });
     super.initState();
 
-  }
-
-  _transformToDocSnap(DocumentSnapshot beer) {
-    DocumentReference ref = beer['reference'];
-    ref.get()
-        .then((DocumentSnapshot ds) {
-      String string = ds['estrellas'].toString();
-      print('agregando: ${string}');
-      listBeers.add(ds);
-      beers.add(beer['nombreBeer']);
-    });
   }
 
 
@@ -99,8 +87,7 @@ class _BarPageState extends State<BarPage> {
           children: <Widget>[
             StreamBuilder<QuerySnapshot>(
               stream: _queryBeers,
-              builder: (BuildContext context,
-                  AsyncSnapshot<QuerySnapshot> snapshot) {
+              builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
                 print('builderBarWidget');
                 print('Bar Widget snap has data : ${snapshot.hasData}');
 
