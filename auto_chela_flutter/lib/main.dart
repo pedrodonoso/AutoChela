@@ -34,7 +34,7 @@ class _HomePageState extends State<HomePage> {
     Color mainColor = Colors.amber;
     return MaterialApp(
       title: 'AutoChela',
-      debugShowCheckedModeBanner: false,
+      debugShowCheckedModeBanner: true,
 
       theme: ThemeData(
         primarySwatch: mainColor,

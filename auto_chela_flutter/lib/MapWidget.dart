@@ -39,7 +39,7 @@ class _MapWidgetState extends State<MapWidget> {
 //          addSemanticIndexes: true,     //proporciona un medio para que los programas lingüísticos como TalkBack o Voiceover hagan anuncios al usuario con discapacidad visual mientras los elementos se desplazan.
                 scrollDirection: Axis.horizontal,
                 itemCount: widget.documents.length,
-                padding: EdgeInsets.all(16),
+                padding: EdgeInsets.only(right: 8.0,left: 8.0),
                 itemBuilder: (BuildContext ctxt, int index) {
                   return siteCard(widget.documents[index],context);
                 })
@@ -54,40 +54,43 @@ Widget siteCard(DocumentSnapshot data,BuildContext context) {
   Pub pub = Pub(data);
 
   return Padding(
-      padding: EdgeInsets.only(left: 2.0, top: 10.0),
+      padding: EdgeInsets.only(right: 0.0),
       child: InkWell(
           onTap: () {
-//              String n =docRef.data.['reference'].toString();
             print("Presionado ${pub.nombre}");
             Navigator.of(context).pushNamed('/bar',arguments: data); //TODO: envía main info del boton presionado
           },
-          child: FittedBox(
-              child: LimitedBox(
-                maxWidth: MediaQuery.of(context).size.width,
+          child: LimitedBox(
+              maxWidth: MediaQuery.of(context).size.width-32,
+              maxHeight: MediaQuery.of(context).size.height*0.2,
+              child: Container(
                 child: Card(
                     color: Colors.white,
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10.0),
+                      borderRadius: BorderRadius.circular(16.0),
                     ),
                     elevation: 14.0,
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: <Widget>[
                         Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: ClipRRect(
-                            borderRadius: new BorderRadius.circular(16.0),
-                            child: Image(
-                              fit: BoxFit.fill,
-                              width: MediaQuery.of(context).size.width* 0.35,
-                              height: MediaQuery.of(context).size.width* 0.35,
-                              image: NetworkImage(pub.imagen,scale: 1.0),
+                            padding: const EdgeInsets.all(8.0),
+                            child: ClipRRect(
+                              borderRadius: new BorderRadius.circular(8.0),
+                              child: Image(
+                                fit: BoxFit.fill,
+                                width: MediaQuery.of(context).size.width* 0.35,
+                                height: MediaQuery.of(context).size.width* 0.35,
+                                image: NetworkImage(pub.imagen,scale: 1.0),
+                              ),
                             ),
                           ),
-                        ),
+
+
+
                         Padding(
-                            padding: const EdgeInsets.only(right:8.0,top:8.0,bottom: 8.0),
+                            padding: const EdgeInsets.all(8.0),
                             child: myDetailsContainer1(pub,context),
                           ),
                       ],)
@@ -103,14 +106,15 @@ Widget siteCard(DocumentSnapshot data,BuildContext context) {
 Widget myDetailsContainer1(Pub data,BuildContext context) {
 
   return LimitedBox(
-      maxWidth: MediaQuery.of(context).size.width*0.55,
+      maxWidth: MediaQuery.of(context).size.width*0.4,
     child: Column(
-      crossAxisAlignment: CrossAxisAlignment.center,
       mainAxisAlignment: MainAxisAlignment.center,
-      mainAxisSize: MainAxisSize.max,
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: <Widget>[
         Text(data.nombre,
+          textAlign: TextAlign.center,
           style: TextStyle(
+
 //                  color: Colors.orange[700],
               fontSize: 24.0,
               fontWeight: FontWeight.bold),
@@ -129,8 +133,8 @@ Widget myDetailsContainer1(Pub data,BuildContext context) {
               ),
             )),
         SizedBox(height:5.0),
-        LimitedBox(
-            maxWidth: MediaQuery.of(context).size.width*0.55,
+        Container(
+//            maxWidth: MediaQuery.of(context).size.width*0.55,
             child: Text( "${data.getStatePub()} \u00B7 ${data.hora}",
               overflow: TextOverflow.ellipsis,
               style: TextStyle(

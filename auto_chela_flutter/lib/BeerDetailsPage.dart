@@ -8,7 +8,7 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'dart:async';
 
-import 'Beer.dart';
+import 'Entity/Beer.dart';
 
 
 

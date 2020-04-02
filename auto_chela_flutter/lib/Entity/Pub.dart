@@ -52,11 +52,14 @@ class Pub{
     TimeOfDay now = TimeOfDay.now();
     print(now.hour);
     var horas =this.hora.split("-");
-    var inicio = int.parse(horas[0].split(":")[0]);
-    var fin = int.parse(horas[1].split(":")[0]);
+    var horainicio = int.parse(horas[0].split(":")[0]);
+    var minutoinicio = int.parse(horas[0].split(":")[1]);
+    var horafin = int.parse(horas[1].split(":")[0]);
+    var minutofin = int.parse(horas[1].split(":")[1]);
+
     var nowHour = now.hour;
     var nowMinute = now.minute;
-    if((inicio < nowHour) && (fin > nowHour)){
+    if(((horainicio < nowHour) && (minutoinicio < nowHour)) && ((horafin > nowHour) && (minutofin > nowHour))){
       print("Esta abierto");
       return "Abierto";
     } else {

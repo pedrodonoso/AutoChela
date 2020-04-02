@@ -1,11 +1,16 @@
 
+import 'dart:ffi';
+
 import 'package:flutter/cupertino.dart';
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:google_maps_webservice/directions.dart';
+import 'package:location/location.dart';
 
+import 'Entity/Pub.dart';
 import 'MapWidget.dart';
 
 class MapPage extends StatefulWidget {
@@ -14,54 +19,66 @@ class MapPage extends StatefulWidget {
 }
 
 class _MapPageState extends State<MapPage> {
-  bool mapToggle = false;
-  bool sitiosToggle = false;
-  bool resetToggle = false;
-  var currentLocation;
-  // var initialPosition;
-//  var sitios = [];
-//  var sitioActual;
-//  var currentBearing;
-  List<Marker> listmarkers = [];
+//  bool mapToggle = false;
+//  bool sitiosToggle = false;
+//  bool resetToggle = false;
+  GoogleMapController mapController;
+//  Geolocation _location;
+
+  StreamSubscription<QuerySnapshot> documentSubscription;
+  List<Pub> pubs = List();
+  LatLng  target;
   Stream<QuerySnapshot> _query;
 
-//  ScrollController ListViewController ;
-  StreamSubscription<Position> _positionStream;
 
-  GoogleMapController mapController;
-  @override
-  void dispose() {
-    if(_positionStream!=null) {
-      _positionStream.cancel();
-      _positionStream = null;
-    }
-    super.dispose();
-  }
+  BitmapDescriptor pinLocationIcon;
+//  Position positionn;
+//  StateMarkers stateMarkers = StateMarkers();
+
+//  void setCustomMapPin() async {
+//    pinLocationIcon = await  BitmapDescriptor.fromAssetImage(
+//        ImageConfiguration(devicePixelRatio: 2.5),
+//        'assets/icon/beer-outline.png');
+//  }
+//
+//  void setPosition() async {
+//    positionn = await Geolocator().getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+//
+//  }
+
   void initState() {
     super.initState();
-//    ListViewController = ScrollController();
-
-
-    setState(() {
-      mapToggle = true;
-      listmarkers.add(
-          Marker(
-              markerId: MarkerId("Prueba"),
-              position: LatLng(-33.5646871,-70.7026347),
-              infoWindow: InfoWindow(title: "Nombre Prueba"),
-              icon: BitmapDescriptor.defaultMarkerWithHue(
-                BitmapDescriptor.hueViolet,
-              )
-          ));
+    _initLocation();
+//    createMarker();
+    setState(()  {
       _query = Firestore.instance.collection('pubs').snapshots();
 
-      // _startTracking();
     });
+  }
+  _initLocation()  {
+     documentSubscription = Firestore.instance.collection('pubs').snapshots()
+        .listen((event) {
+         pubs = event.documents.map((e) => Pub(e)).toList();
+
+    });
+
+
+  }
+  void createMarker() async {
+
+      ImageConfiguration   configuration = ImageConfiguration(devicePixelRatio: 2.5);
+      BitmapDescriptor bmp = await BitmapDescriptor.fromAssetImage(configuration,'assets/icon/beer-outline.png');
+      pinLocationIcon = bmp;
   }
 
   @override
   Widget build(BuildContext context) {
     LatLng latLng = LatLng(-33.5646871,-70.7026347);
+//    createMarker(context);
+//    List<Marker> markers= pubs.map(
+//            (pub) => Marker(
+//                markerId: MarkerId(pub.nombre),infoWindow: InfoWindow(title: pub.nombre),
+//                position: LatLng(pub.posicion.latitude,pub.posicion.longitude))).toList();
     return Scaffold(
         appBar: AppBar(
           title: Text('AutoChela'),
@@ -71,35 +88,34 @@ class _MapPageState extends State<MapPage> {
             Container(
                 height: MediaQuery.of(context).size.height,
                 width: MediaQuery.of(context).size.width,
-                child: mapToggle
-                    ? GoogleMap(
-                          initialCameraPosition: CameraPosition(
-                              target: latLng,//TODO: ubicacion inicial
-                              zoom: 15
-                          ),
-                          onMapCreated: onMapCreated,
-                          myLocationButtonEnabled: true,
-                          myLocationEnabled: true,
-                          mapType: MapType.normal,
-                          compassEnabled: true,
-                          markers:  Set.from(listmarkers),
-                        )
-                    : Center(
-                        child: Text(
-                          'Revisa datos, gps, wifi..',
-                          style: TextStyle(fontSize: 20.0)
-                        )
-                )
-
-            ),
+                child:
+//
             StreamBuilder<QuerySnapshot>(
               stream: _query,
               builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
                 if(snapshot.hasData) {
                   print('STREAM MAP FULL');
-                  return MapWidget(
-                    documents: snapshot.data.documents,
-                  );
+//                  snapshot.data.documents.map((element) {
+//                    print(element);
+//                    Pub pub = Pub(element);
+//                    print(pub.nombre);
+//                    Marker m  =  Marker(
+//                        markerId: MarkerId(pub.nombre),
+//                        position: LatLng(pub.posicion.latitude, pub.posicion.longitude),
+//                        infoWindow: InfoWindow(title: pub.nombre),
+//                        icon: BitmapDescriptor.defaultMarkerWithHue(
+//                          BitmapDescriptor.hueOrange,
+//                        ));
+//                    listmarkers.add(m);
+//                  });
+                  print("MARKERS: ${pubs.length}");
+//                  stateMarkers.setState(listmarkers);
+
+                  return _mapWiget(latLng,snapshot.data);
+//                    Center(child: CircularProgressIndicator());
+//                    MapWidget(
+//                    documents: snapshot.data.documents,
+//                  );
                 } else if( snapshot.connectionState ==  ConnectionState.done) {
                   print('CONNECTION DONE');
                   return _snackBar("CONNECTIONDONE");
@@ -122,20 +138,101 @@ class _MapPageState extends State<MapPage> {
                 }
               },
             ),
+            )
 
           ],
         )
     );
 
   }
-  Future<Position> _getPosition() async {
-    Position position = await Geolocator().getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
-    return position;
-  }
 
-  void onMapCreated(controller) {
+
+Widget _mapWiget(LatLng latLng, QuerySnapshot snapshot ) {
+    print("LARGO :${snapshot.documents.length}");
+//    createMarker();
+    List<Marker> markers= pubs.map(
+            (pub) => Marker(
+                markerId: MarkerId(pub.nombre),infoWindow: InfoWindow(title: pub.nombre),
+                position: LatLng(pub.posicion.latitude,pub.posicion.longitude),
+//                icon: pinLocationIcon
+                icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueOrange)
+
+
+            )).toList();
+
+//    snapshot.documents.map((element) {
+//        Pub pub = Pub(element);
+//        print("ELEMENT : ${element.data["nombreBar"]}");
+//        print(pub.nombre);
+//        Marker m  =  Marker(
+//            markerId: MarkerId(pub.nombre),
+//            position: LatLng(pub.posicion.latitude, pub.posicion.longitude),
+//            infoWindow: InfoWindow(title: pub.nombre),
+//            icon: BitmapDescriptor.defaultMarkerWithHue(
+//              BitmapDescriptor.hueOrange,
+//            ));
+//          listmarkers.add(m);
+//
+//      });
+    return Stack (
+      children: <Widget>[
+//    mapToggle ?
+//    true ?
+    GoogleMap (
+        initialCameraPosition: CameraPosition(
+        target: latLng,
+        zoom: 15
+    ),
+  //                          onTap: (pos) {
+  //                            print(pos);
+  //                            Marker m = Marker(markerId: MarkerId('1'), icon: pinLocationIcon,position: pos);
+  //                            setState(() {
+  //                              listmarkers.add(m);
+  //                            });
+  //                          },
+  onMapCreated: onMapCreated,
+  myLocationButtonEnabled: true,
+  myLocationEnabled: true,
+  mapType: MapType.normal,
+  compassEnabled: true,
+//            markers: Set.from(listmarkers)
+  markers: markers.toSet()),
+//            Set.from(snapshot.documents.toList().map((doc) =>  Marker(
+//                markerId: MarkerId(doc.data['nombreBar']),
+//                position: LatLng(doc.data['location'].latitude, doc.data['location'].longitude),
+//                infoWindow: InfoWindow(title: doc.data['nombreBar']),
+//                icon: BitmapDescriptor.defaultMarkerWithHue(
+//                  BitmapDescriptor.hueOrange,
+//                )))),
+  //                          Set.from(listmarkers),
+
+            MapWidget(
+                documents: snapshot.documents,
+                  )
+      ],
+    );
+}
+  void onMapCreated(controller) async {
+//    var icon;
+//    await setCustomMapPin().then((i) => icon=i);
     setState(() {
       mapController = controller;
+
+
+//      listmarkers.add(
+//          Marker(
+//            markerId: MarkerId("Prueba"),
+//            position: LatLng(-33.5646871,-70.7026347),
+//            infoWindow: InfoWindow(title: "Nombre Prueba"),
+//            icon:  icon,
+////              pinLocationIcon,
+////              BitmapDescriptor.defaultMarkerWithHue(
+////                BitmapDescriptor.hueOrange, )
+//
+//          ));
+//      _getPosition();
+
+
     });
   }
   Widget _snackBar(String nombre) {
@@ -164,37 +261,7 @@ class _MapPageState extends State<MapPage> {
     }
   }*/
 
-  /*  populateClients() {
-    print('populate');
-    sitios = [];
 
-    Firestore.instance.collection('markers').getDocuments().then((docs) {
-      if (docs.documents.isNotEmpty) {
-        setState(() {
-          sitiosToggle = true;
-        });
-        for (int i = 0; i < docs.documents.length; ++i) {
-          print(docs.documents[i].data['nombreSitio']);
-          sitios.add(docs.documents[i].data);
-          setState(() {
-            listmarkers.add(
-              Marker(
-              markerId: MarkerId(docs.documents[i].data['nombreSitio']),
-              position: LatLng(
-                  docs.documents[i].data['location'].latitude, docs.documents[i].data['location'].longitude),
-              infoWindow: InfoWindow(title: docs.documents[i].data['nombreSitio']),
-               icon: BitmapDescriptor.defaultMarkerWithHue(
-                 BitmapDescriptor.hueViolet,
-               )
-          ));
-          });
-
-        }
-      }
-    });
-  }
-
- */
 
   zoomInMarker(sitio) {
     mapController
@@ -206,7 +273,7 @@ class _MapPageState extends State<MapPage> {
         tilt: 45.0)))
         .then((val) {
       setState(() {
-        resetToggle = true;
+//        resetToggle = true;
       });
     });
   }
@@ -215,7 +282,7 @@ class _MapPageState extends State<MapPage> {
     mapController.animateCamera(CameraUpdate.newCameraPosition(
         CameraPosition(target: LatLng(51.0533076, 5.9260656), zoom: 5.0))).then((val) {//Alemania, Berlin
       setState(() {
-        resetToggle = false;
+//        resetToggle = false;
       });
     });
   }
@@ -263,3 +330,15 @@ class _MapPageState extends State<MapPage> {
 //  }
 
 }
+
+
+class StateMarkers {
+  final _stateController = StreamController<List<Marker>>();
+  Stream<List<Marker>>get estate => _stateController.stream;
+  void setState(List<Marker> val) =>_stateController.add(val);
+
+  dispose(){
+    _stateController.close();
+  }
+}
+
