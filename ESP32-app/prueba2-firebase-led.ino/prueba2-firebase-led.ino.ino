@@ -1,13 +1,9 @@
 
 /*
  * Created by K. Suwatchai (Mobizt)
- * 
  * Email: k_suwatchai@hotmail.com
- * 
  * Github: https://github.com/mobizt
- * 
  * Copyright (c) 2019 mobizt
- * 
  * This example is for the beginner
  *
 */
@@ -21,6 +17,7 @@
 #define FIREBASE_AUTH "c22tyqz0enwMaUHXiwVe3r9K7Yvcg4LoTNYX8qGM"
 #define WIFI_SSID "VTR-5181707"
 #define WIFI_PASSWORD "Yy7hjdjx7zhx"
+//#define path "/led-prueba"
 #define path "/led-prueba"
 
 //2. Define FirebaseESP8266 data object for data sending and receiving

@@ -7,7 +7,7 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'dart:async';
 
-
+import 'dart:convert';
 
 
 //
@@ -36,7 +36,9 @@ class BeerDetailsPage extends StatefulWidget {
 
 class _BeerDetailsState extends State<BeerDetailsPage> {
 
-  final String path = "/led-prueba";
+  // final String path = "/led-prueba";
+  final String path = "/prueba-hardware";
+
   DatabaseReference itemRef;
   StateHardware stateHardware = StateHardware();
 
@@ -45,11 +47,11 @@ class _BeerDetailsState extends State<BeerDetailsPage> {
     super.initState();
 //    itemRef = FirebaseDatabase.instance.reference().child(path);
     final FirebaseDatabase database = FirebaseDatabase(app: widget.app);
-    itemRef = database.reference().reference().child(path);
+    itemRef = database.reference().child(path);
     stateHardware.setState(true);
   }
 
-
+  bool _value = false;
   @override
   Widget build(BuildContext context) {
     Beer _beer  = Beer(widget.beer);
@@ -118,33 +120,66 @@ class _BeerDetailsState extends State<BeerDetailsPage> {
                               if(snapshot.data == null) {
                                 print("STREAM NULL");
                               } else if(snapshot.hasData) {
-                                if(snapshot.data.snapshot.value != null) {
-                                    stateHardware.setState(snapshot.data.snapshot.value);
+                                // if(snapshot.data.snapshot.value != null) {
+                                    // stateHardware.setState(snapshot.data.snapshot.value);
   //                                return _textBuild(snapshot.data.snapshot.value);
                                     print("STREAM PERFECT");
                                     return Column(
                                       children: <Widget>[
                                         SizedBox(height: 16),
                                         Text(
-                                          snapshot.data.snapshot.value ? "Apagado" : "Encendido",
+                                          // snapshot.data.snapshot.value ? "Apagado" : "Encendido",
+                                          false ? "Apagado" : "Encendido",
                                           style: TextStyle(
                                               fontSize: 14.0,
                                               fontWeight: FontWeight.normal),
                                         ),
                                         Divider(height: 8,indent: 8, endIndent: 8, ),
-                                        Switch(
-                                          value: snapshot.data.snapshot.value,
-                                          onChanged: (bool s) {
-                                            setState(() {
-//                                              estado = s;
-//                                              _changeState(estado);
-                                              itemRef.set(s);
-                                            });
+                                        ChoiceChip(
+                                            label: Text('250'),
+                                            selected: _value,
+                                            onSelected: (bool selected) {
+                                              print("250cc");
+                                              print(selected);
+                                              setState(() {
+                                                _value = (!_value);
+                                              });
+                                              // setState(() {
+                                              //   _value = selected ? index : null;
+                                              // });
+                                              // setState(() {
+                                              //   _value = selected ? index : null;
+                                              // });
+                                            }),
+                                        RaisedButton(
+                                          elevation: 8.0,
+                                          onPressed: () {
+                                            Map<dynamic, dynamic> map = snapshot.data.snapshot.value;
+                                            Hardware hard = Hardware.fromJson(map);
+                                            print(hard.total);
+                                            if(_value) {
+                                              hard.peticion = 250;
+                                              itemRef.update(hard.toJson());
+                                            };
+                                            // itemRef.set(hard.toJson());
+
+
                                           },
-                                        ),
-                                      ],
+                                          child: Text("Pedir")
+                                        )
+//                                         Switch(
+//                                           value: snapshot.data.snapshot.value,
+//                                           onChanged: (bool s) {
+//                                             setState(() {
+// //                                              estado = s;
+// //                                              _changeState(estado);
+//                                               itemRef.set(s);
+//                                             });
+//                                           },
+                                        // ),
+                                      ], 
                                     );
-                                }
+                                // }
                               }
                               print("STREAM OTRO");
                               return Text(
@@ -165,11 +200,11 @@ class _BeerDetailsState extends State<BeerDetailsPage> {
 
   @override
   void dispose() {
-    // TODO: implement dispose
     super.dispose();
     stateHardware.dispose();
   }
 }
+
 
 class StateHardware {
   final _stateController = StreamController<bool>();
@@ -179,4 +214,26 @@ class StateHardware {
   dispose(){
     _stateController.close();
   }
+}
+
+class Hardware {
+  int total;
+  bool disponible;
+  bool estado;
+  int peticion;
+
+  Hardware(this.total,this.disponible,this.estado,this.peticion);
+  Hardware.fromJson(Map<dynamic, dynamic> json) 
+    : total = json['total'],
+      disponible = json['disponible'],
+      estado = json['estado'],
+      peticion = json['peticion'];
+
+  Map<String, dynamic> toJson() =>
+  {
+    'total' : total,
+    'peticion' : peticion,
+    'estado' : estado,
+    'disponible' : disponible
+  };
 }

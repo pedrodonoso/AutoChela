@@ -47,10 +47,7 @@ class Pub{
     return this.hora.split("-")[1];
   }
   String getStatePub() {
-    print("HORA: ${this.hora}");
-    print(this.hora.split("-"));
     TimeOfDay now = TimeOfDay.now();
-    print(now.hour);
     var horas =this.hora.split("-");
     var horainicio = int.parse(horas[0].split(":")[0]);
     var minutoinicio = int.parse(horas[0].split(":")[1]);
@@ -59,8 +56,7 @@ class Pub{
 
     var nowHour = now.hour;
     var nowMinute = now.minute;
-    if(((horainicio < nowHour) && (minutoinicio < nowHour)) && ((horafin > nowHour) && (minutofin > nowHour))){
-      print("Esta abierto");
+    if(((horainicio < nowHour) && (minutoinicio < nowMinute)) && ((horafin > nowHour) && (minutofin > nowMinute))){
       return "Abierto";
     } else {
       return "Cerrado";
