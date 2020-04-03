@@ -1,11 +1,11 @@
 
 
+import 'package:AutoChela/src/widgets/BeerWidget.dart';
+
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
-import 'BeerWidget.dart';
-
 
 
 
@@ -33,8 +33,8 @@ class _BarPageState extends State<BarPage> {
 
 
     setState(() {
-      print("initStateBARwidget");
-      print("Iniciando coleccion de Cervezas");
+      // print("initStateBARwidget");
+      print("INICIANDO BAR");
       DocumentReference ref = widget.data.reference;
 //      DocumentReference refBeer ;
 
@@ -55,7 +55,7 @@ class _BarPageState extends State<BarPage> {
 
   @override
   Widget build(BuildContext context) {
-    print("buildBar");
+    // print("buildBar");
 
 //    listBeers.forEach((DocumentSnapshot beer) => beers.add(beer['nombreBeer']));
     return Scaffold(
@@ -88,11 +88,11 @@ class _BarPageState extends State<BarPage> {
             StreamBuilder<QuerySnapshot>(
               stream: _queryBeers,
               builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-                print('builderBarWidget');
-                print('Bar Widget snap has data : ${snapshot.hasData}');
+                // print('builderBarWidget');
+                print('BARWIDGHET DATA : ${snapshot.hasData}');
 
                 if (snapshot.hasData &&  snapshot.data.documents.isNotEmpty ) {
-                  print("LARGO: ${snapshot.data.documents.length}");
+                  // print("LARGO: ${snapshot.data.documents.length}");
 
                   return BeerWidget(
 //                    listReferencesBeer: snapshot.data.documents.map((DocumentSnapshot doc) {

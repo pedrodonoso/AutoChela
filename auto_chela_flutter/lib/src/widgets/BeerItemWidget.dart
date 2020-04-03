@@ -1,12 +1,12 @@
 
 
-import 'package:AutoChela/Entity/Stars.dart';
+import 'package:AutoChela/entity/Beer.dart';
+import 'package:AutoChela/entity/Stars.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-import 'Entity/Beer.dart';
 
 class BeerItemWidget extends StatefulWidget {
   final DocumentSnapshot document;
@@ -23,7 +23,6 @@ class _BeerItemWidgetState extends State<BeerItemWidget> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     setState(() {
       beer = Beer(widget.document);
@@ -34,7 +33,7 @@ class _BeerItemWidgetState extends State<BeerItemWidget> {
     beer = Beer(widget.document);
     return GestureDetector(
         onTap: () {
-          print(beer.toString());
+          // print(beer.toString());
           Navigator.pushNamed(context, '/beerDetails',arguments: widget.document);
         },
         onLongPress: () {

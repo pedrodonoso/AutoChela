@@ -1,12 +1,17 @@
 
+import 'package:AutoChela/src/pages/BarPage.dart';
+
+import 'package:AutoChela/src/PushNotificationProvider.dart';
+import 'package:AutoChela/src/pages/BeerDetailsPage.dart';
+import 'package:AutoChela/src/pages/MapPage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'BarPage.dart';
-import 'BeerDetailsPage.dart';
-import 'MapPage.dart';
+
+
 
 //void main() => runApp(MyApp());
+//void main() => runApp(HomePage());
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   final FirebaseApp app =  await FirebaseApp.configure(
@@ -30,11 +35,17 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   @override
+  void initState() {
+    super.initState();
+    final pushProvider = PushNotificationProvider();
+    pushProvider.initNotifications();
+  }
+  @override
   Widget build(BuildContext context) {
     Color mainColor = Colors.amber;
     return MaterialApp(
       title: 'AutoChela',
-      debugShowCheckedModeBanner: true,
+      debugShowCheckedModeBanner: false,
 
       theme: ThemeData(
         primarySwatch: mainColor,

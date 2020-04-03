@@ -1,7 +1,7 @@
 
 
-import 'package:AutoChela/Entity/Pub.dart';
-import 'package:AutoChela/Entity/Stars.dart';
+import 'package:AutoChela/entity/Pub.dart';
+import 'package:AutoChela/entity/Stars.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -27,10 +27,11 @@ class _MapWidgetState extends State<MapWidget> {
   @override
   Widget build(BuildContext context) {
     return Positioned(
-        top: MediaQuery.of(context).size.height - 280.0,
+        //  top: MediaQuery.of(context).size.height - 200,
+        bottom: 0,
 //      top: MediaQuery.of(context).size.height - 200.0,
         child: Container(
-            height: 200,
+            height: MediaQuery.of(context).size.height*0.28,
             width: MediaQuery.of(context).size.width,
             child:  ListView.builder(
 //            controller: widget.controller,
@@ -39,7 +40,7 @@ class _MapWidgetState extends State<MapWidget> {
 //          addSemanticIndexes: true,     //proporciona un medio para que los programas lingüísticos como TalkBack o Voiceover hagan anuncios al usuario con discapacidad visual mientras los elementos se desplazan.
                 scrollDirection: Axis.horizontal,
                 itemCount: widget.documents.length,
-                padding: EdgeInsets.only(right: 8.0,left: 8.0),
+                padding: EdgeInsets.only(top: 8.0,bottom: 8.0),
                 itemBuilder: (BuildContext ctxt, int index) {
                   return siteCard(widget.documents[index],context);
                 })
@@ -54,23 +55,26 @@ Widget siteCard(DocumentSnapshot data,BuildContext context) {
   Pub pub = Pub(data);
 
   return Padding(
-      padding: EdgeInsets.only(right: 0.0),
+      padding: EdgeInsets.only(right: 8.0,left:8.0),
       child: InkWell(
           onTap: () {
             print("Presionado ${pub.nombre}");
             Navigator.of(context).pushNamed('/bar',arguments: data); //TODO: envía main info del boton presionado
           },
           child: LimitedBox(
-              maxWidth: MediaQuery.of(context).size.width-32,
-              maxHeight: MediaQuery.of(context).size.height*0.2,
-              child: Container(
+                maxWidth: MediaQuery.of(context).size.width-16,
+                maxHeight: MediaQuery.of(context).size.height*0.3,
+              child: FittedBox(
                 child: Card(
                     color: Colors.white,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(16.0),
                     ),
                     elevation: 14.0,
-                    child: Row(
+                    child: Container(
+                      // maxWidth: MediaQuery.of(context).size.width-32,
+                      // maxHeight: MediaQuery.of(context).size.height,
+                      child: Row(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: <Widget>[
@@ -85,7 +89,8 @@ Widget siteCard(DocumentSnapshot data,BuildContext context) {
                                 image: NetworkImage(pub.imagen,scale: 1.0),
                               ),
                             ),
-                          ),
+                        ),
+                        
 
 
 
@@ -94,6 +99,7 @@ Widget siteCard(DocumentSnapshot data,BuildContext context) {
                             child: myDetailsContainer1(pub,context),
                           ),
                       ],)
+                    )
                 ),
               )
           )
@@ -106,7 +112,7 @@ Widget siteCard(DocumentSnapshot data,BuildContext context) {
 Widget myDetailsContainer1(Pub data,BuildContext context) {
 
   return LimitedBox(
-      maxWidth: MediaQuery.of(context).size.width*0.4,
+    maxWidth: MediaQuery.of(context).size.width*0.55,
     child: Column(
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,

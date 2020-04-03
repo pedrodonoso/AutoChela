@@ -1,5 +1,5 @@
 
-import 'package:AutoChela/BeerItemWidget.dart';
+import 'package:AutoChela/src/widgets/BeerItemWidget.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';

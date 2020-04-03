@@ -1,6 +1,8 @@
 
 import 'dart:ffi';
 
+import 'package:AutoChela/entity/Pub.dart';
+import 'package:AutoChela/src/widgets/MapWidget.dart';
 import 'package:flutter/cupertino.dart';
 import 'dart:async';
 import 'package:flutter/material.dart';
@@ -10,8 +12,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_maps_webservice/directions.dart';
 import 'package:location/location.dart';
 
-import 'Entity/Pub.dart';
-import 'MapWidget.dart';
+
+
 
 class MapPage extends StatefulWidget {
   @override
@@ -32,6 +34,7 @@ class _MapPageState extends State<MapPage> {
 
 
   BitmapDescriptor pinLocationIcon;
+  List<Marker> markers;
 //  Position positionn;
 //  StateMarkers stateMarkers = StateMarkers();
 
@@ -51,6 +54,7 @@ class _MapPageState extends State<MapPage> {
     _initLocation();
 //    createMarker();
     setState(()  {
+      markers = [];
       _query = Firestore.instance.collection('pubs').snapshots();
 
     });
@@ -74,6 +78,15 @@ class _MapPageState extends State<MapPage> {
   @override
   Widget build(BuildContext context) {
     LatLng latLng = LatLng(-33.5646871,-70.7026347);
+    markers= pubs.map(
+            (pub) => Marker(
+            markerId: MarkerId(pub.nombre),infoWindow: InfoWindow(title: pub.nombre),
+            position: LatLng(pub.posicion.latitude,pub.posicion.longitude),
+//                icon: pinLocationIcon
+            icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueOrange)
+
+
+        )).toList();
 //    createMarker(context);
 //    List<Marker> markers= pubs.map(
 //            (pub) => Marker(
@@ -85,10 +98,29 @@ class _MapPageState extends State<MapPage> {
         ),
         body: Stack(
           children: <Widget>[
+
             Container(
                 height: MediaQuery.of(context).size.height,
                 width: MediaQuery.of(context).size.width,
-                child:
+                child: GoogleMap (
+                    initialCameraPosition: CameraPosition(
+                        target: latLng,
+                        zoom: 15
+                    ),
+                    //                          onTap: (pos) {
+                    //                            print(pos);
+                    //                            Marker m = Marker(markerId: MarkerId('1'), icon: pinLocationIcon,position: pos);
+                    //                            setState(() {
+                    //                              listmarkers.add(m);
+                    //                            });
+                    //                          },
+                    onMapCreated: onMapCreated,
+                    myLocationButtonEnabled: true,
+                    myLocationEnabled: true,
+                    mapType: MapType.normal,
+                    compassEnabled: true,
+//            markers: Set.from(listmarkers)
+                    markers: markers.toSet()),),
 //
             StreamBuilder<QuerySnapshot>(
               stream: _query,
@@ -138,7 +170,7 @@ class _MapPageState extends State<MapPage> {
                 }
               },
             ),
-            )
+
 
           ],
         )
@@ -150,15 +182,7 @@ class _MapPageState extends State<MapPage> {
 Widget _mapWiget(LatLng latLng, QuerySnapshot snapshot ) {
     print("LARGO :${snapshot.documents.length}");
 //    createMarker();
-    List<Marker> markers= pubs.map(
-            (pub) => Marker(
-                markerId: MarkerId(pub.nombre),infoWindow: InfoWindow(title: pub.nombre),
-                position: LatLng(pub.posicion.latitude,pub.posicion.longitude),
-//                icon: pinLocationIcon
-                icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueOrange)
 
-
-            )).toList();
 
 //    snapshot.documents.map((element) {
 //        Pub pub = Pub(element);
@@ -178,25 +202,7 @@ Widget _mapWiget(LatLng latLng, QuerySnapshot snapshot ) {
       children: <Widget>[
 //    mapToggle ?
 //    true ?
-    GoogleMap (
-        initialCameraPosition: CameraPosition(
-        target: latLng,
-        zoom: 15
-    ),
-  //                          onTap: (pos) {
-  //                            print(pos);
-  //                            Marker m = Marker(markerId: MarkerId('1'), icon: pinLocationIcon,position: pos);
-  //                            setState(() {
-  //                              listmarkers.add(m);
-  //                            });
-  //                          },
-  onMapCreated: onMapCreated,
-  myLocationButtonEnabled: true,
-  myLocationEnabled: true,
-  mapType: MapType.normal,
-  compassEnabled: true,
-//            markers: Set.from(listmarkers)
-  markers: markers.toSet()),
+
 //            Set.from(snapshot.documents.toList().map((doc) =>  Marker(
 //                markerId: MarkerId(doc.data['nombreBar']),
 //                position: LatLng(doc.data['location'].latitude, doc.data['location'].longitude),

@@ -9,6 +9,7 @@
         android:name="io.flutter.app.FlutterApplication"
         android:label="AutoChela"
         android:icon="@mipmap/launcher_icon">
+
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyDB3JIHT6cmu5R7x3mrgM1x4fwGO0lUmsc"/>
@@ -19,6 +20,10 @@
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"
             android:hardwareAccelerated="true"
             android:windowSoftInputMode="adjustResize">
+            <intent-filter>
+                <action android:name="FLUTTER_NOTIFICATION_CLICK" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
