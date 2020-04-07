@@ -1,5 +1,6 @@
 
 
+import 'package:AutoChela/entity/Beer.dart';
 import 'package:AutoChela/src/widgets/BeerWidget.dart';
 
 
@@ -29,7 +30,6 @@ class _BarPageState extends State<BarPage> {
 
   @override
   void initState() {
-    // TODO: implement initState
 
 
     setState(() {
@@ -103,6 +103,7 @@ class _BarPageState extends State<BarPage> {
 //                      });
 //                    }).toList(),
                     listReferencesBeer: snapshot.data.documents,
+                    
                   );
 
                 } else if( snapshot.connectionState ==  ConnectionState.done) {

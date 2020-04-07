@@ -28,7 +28,6 @@ class _BeerWidgetState extends State<BeerWidget> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     print('INIT STATE');
     setState(() {

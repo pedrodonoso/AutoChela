@@ -1,4 +1,5 @@
 
+import 'package:AutoChela/entity/Beer.dart';
 import 'package:AutoChela/src/pages/BarPage.dart';
 
 import 'package:AutoChela/src/PushNotificationProvider.dart';
@@ -48,8 +49,14 @@ class _HomePageState extends State<HomePage> {
       debugShowCheckedModeBanner: false,
 
       theme: ThemeData(
-        primarySwatch: mainColor,
-      ),
+        // primarySwatch: mainColor,
+        primaryColor: Palette.primary,
+        accentColor: Palette.secundary,
+        // backgroundColor: Palette.secundary,
+        buttonColor: Palette.secundary,
+        primaryColorDark: Palette.primaryDark,
+        primaryColorLight: Palette.primaryLight,
+        ),
 //      home: MyHomePage(title: 'Flutter Demo Home Page'),
       onGenerateRoute: (RouteSettings settings){
         WidgetBuilder builder;
@@ -73,7 +80,7 @@ class _HomePageState extends State<HomePage> {
             break;
           case '/beerDetails':
             var args = settings.arguments;
-            if(args is DocumentSnapshot) {
+            if(args is Beer) {
               builder =
                   (BuildContext context) =>
                   BeerDetailsPage(
@@ -141,3 +148,13 @@ class _HomePageState extends State<HomePage> {
 //  }
 //}
 
+
+class Palette {
+
+  static const Color primary = Color(0xFF344955);
+  static const Color primaryLight = Color(0xFF5f7481);
+  static const Color primaryDark = Color(0xFF0b222c);
+  static const Color secundary = Color(0xFFF9a825);
+  static const Color secundaryLight = Color(0xFFffd95a);
+  static const Color secundaryDark = Color(0xFFc17900);
+}

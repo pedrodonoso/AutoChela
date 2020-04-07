@@ -10,6 +10,12 @@
         android:label="AutoChela"
         android:icon="@mipmap/launcher_icon">
 
+<!--
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_icon"
+            android:resource="@mipmap/ic_stat_ic_notification" />
+-->
+        
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyDB3JIHT6cmu5R7x3mrgM1x4fwGO0lUmsc"/>

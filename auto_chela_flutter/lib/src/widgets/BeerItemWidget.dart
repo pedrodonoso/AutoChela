@@ -34,7 +34,8 @@ class _BeerItemWidgetState extends State<BeerItemWidget> {
     return GestureDetector(
         onTap: () {
           // print(beer.toString());
-          Navigator.pushNamed(context, '/beerDetails',arguments: widget.document);
+          // Navigator.pushNamed(context, '/beerDetails',arguments: widget.document);
+          Navigator.pushNamed(context, '/beerDetails',arguments: beer);
         },
         onLongPress: () {
 

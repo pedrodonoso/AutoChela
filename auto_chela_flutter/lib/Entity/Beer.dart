@@ -8,6 +8,7 @@ class Beer{
   String imagen;
   var estrellas;
   var precio;
+  String id;
   DocumentSnapshot ref;
 
   Beer(DocumentSnapshot doc){
@@ -17,6 +18,7 @@ class Beer{
     this.imagen = doc['image'];
     this.estrellas = doc['estrellas'];
     this.precio = doc['precio'];
+    this.id = doc.documentID;
   }
 
   @override
